@@ -1,0 +1,363 @@
+import numpy as np
+import serial
+from tkinter import *
+
+
+negro = Tk() 
+negro.title('TORRES DE HANOI')
+negro.geometry("600x900")  
+negro.configure(background='red', padx=7, pady=7)
+
+
+text1=StringVar()
+text1.set('num_discos: 3')
+label1 = Label(negro, textvariable=text1)
+label1.configure(background = 'white')
+label1.grid(row=6, column=0, padx=(10, 10), pady=(10, 10))
+
+text2=StringVar()
+text2.set('valor_modo: 1')
+label1 = Label(negro, textvariable=text2)
+label1.configure(background = 'white')
+label1.grid(row=6, column=1, padx=(10, 10), pady=(10, 10))
+
+text3=StringVar()
+text3.set('cambio')
+label1 = Label(negro, textvariable=text3)
+label1.configure(background = 'white')
+label1.grid(row=6, column=2, padx=(10, 10), pady=(10, 10))
+
+text4=StringVar()
+text4.set('...')
+label1 = Label(negro, textvariable=text4)
+label1.configure(background = 'white')
+label1.grid(row=6, column=3, padx=(10, 10), pady=(10, 10))
+
+text5=StringVar()
+text5.set('comentario')
+label1 = Label(negro,wraplength=100, textvariable=text5)
+label1.configure(background = 'white')
+label1.grid(row=0, column=0, padx=(10, 10), pady=(10, 10))
+
+torre_1a=StringVar()
+torre_1a.set('88888|88888')
+torre_1b=StringVar()
+torre_1b.set('88888|88888')
+torre_1c=StringVar()
+torre_1c.set('88888|88888')
+torre_1d=StringVar()
+torre_1d.set('88888|88888')
+torre_1e=StringVar()
+torre_1e.set('88888|88888')
+
+label1 = Label(negro, textvariable=torre_1a)
+label1.configure(background = 'white')
+label1.grid(row=1, column=0, padx=(10, 10), pady=(10, 10))
+
+label1 = Label(negro, textvariable=torre_1b)
+label1.configure(background = 'white')
+label1.grid(row=2, column=0, padx=(10, 10), pady=(10, 10))
+
+label1 = Label(negro, textvariable=torre_1c)
+label1.configure(background = 'white')
+label1.grid(row=3, column=0, padx=(10, 10), pady=(10, 10))
+
+label1 = Label(negro, textvariable=torre_1d)
+label1.configure(background = 'white')
+label1.grid(row=4, column=0, padx=(10, 10), pady=(10, 10))
+
+label1 = Label(negro, textvariable=torre_1e)
+label1.configure(background = 'white')
+label1.grid(row=5, column=0, padx=(10, 10), pady=(10, 10))
+
+
+torre_2a=StringVar()
+torre_2a.set('88888|88888')
+torre_2b=StringVar()
+torre_2b.set('88888|88888')
+torre_2c=StringVar()
+torre_2c.set('88888|88888')
+torre_2d=StringVar()
+torre_2d.set('88888|88888')
+torre_2e=StringVar()
+torre_2e.set('88888|88888')
+
+label1 = Label(negro, textvariable=torre_2a)
+label1.configure(background = 'white')
+label1.grid(row=1, column=1, padx=(10, 10), pady=(10, 10))
+
+label1 = Label(negro, textvariable=torre_2b)
+label1.configure(background = 'white')
+label1.grid(row=2, column=1, padx=(10, 10), pady=(10, 10))
+
+label1 = Label(negro, textvariable=torre_2c)
+label1.configure(background = 'white')
+label1.grid(row=3, column=1, padx=(10, 10), pady=(10, 10))
+
+label1 = Label(negro, textvariable=torre_2d)
+label1.configure(background = 'white')
+label1.grid(row=4, column=1, padx=(10, 10), pady=(10, 10))
+
+label1 = Label(negro, textvariable=torre_2e)
+label1.configure(background = 'white')
+label1.grid(row=5, column=1, padx=(10, 10), pady=(10, 10))
+
+
+torre_3a=StringVar()
+torre_3a.set('88888|88888')
+torre_3b=StringVar()
+torre_3b.set('88888|88888')
+torre_3c=StringVar()
+torre_3c.set('88888|88888')
+torre_3d=StringVar()
+torre_3d.set('88888|88888')
+torre_3e=StringVar()
+torre_3e.set('88888|88888')
+
+label1 = Label(negro, textvariable=torre_3a)
+label1.configure(background = 'white')
+label1.grid(row=1, column=2, padx=(10, 10), pady=(10, 10))
+
+label1 = Label(negro, textvariable=torre_3b)
+label1.configure(background = 'white')
+label1.grid(row=2, column=2, padx=(10, 10), pady=(10, 10))
+
+label1 = Label(negro, textvariable=torre_3c)
+label1.configure(background = 'white')
+label1.grid(row=3, column=2, padx=(10, 10), pady=(10, 10))
+
+label1 = Label(negro, textvariable=torre_3d)
+label1.configure(background = 'white')
+label1.grid(row=4, column=2, padx=(10, 10), pady=(10, 10))
+
+label1 = Label(negro, textvariable=torre_3e)
+label1.configure(background = 'white')
+label1.grid(row=5, column=2, padx=(10, 10), pady=(10, 10))
+
+num_discos=3
+tor_ini=1
+tor_fin=3
+cambio=np.zeros((99999,2),dtype=int)
+ju_numero=0
+matriz_hanoi=np.zeros((7,3),dtype=int)
+contador=0
+t_inicial=0
+t_final=0
+valor_modo=1
+configuracion=0
+decision='1-2'
+t_des_ini=0
+t_des_fin=0
+temporal=''
+flag=0
+ser=serial.Serial('COM6',9600,timeout=.1)
+
+def comienzo():
+    global t_des_ini
+    global t_des_fin
+    t_des_ini=1
+    t_des_fin=2
+    for i in range(num_discos):                     
+        matriz_hanoi[i+2,tor_ini-1]=num_discos-i 
+        matriz_hanoi[0,tor_ini-1]=num_discos
+        matriz_hanoi[1,tor_ini-1]=1
+    recursion_hanoi(num_discos,tor_ini,tor_fin)
+    visualizar()
+
+def ciclo_principal():
+    mensaje = (ser.readline() ).decode('utf-8').strip()
+    print(mensaje)
+    accion_mensaje(mensaje)
+    negro.after(50,ciclo_principal)
+
+def accion_mensaje(mensaje):
+    global configuracion
+    global num_discos
+    global valor_modo
+    global decision
+    global t_des_ini
+    global t_des_fin
+    print('a')
+    if mensaje=='1':
+        print('b')
+        if num_discos==3:
+            num_discos=4
+        else:
+            if num_discos==4:
+                num_discos=5
+            else:
+                num_discos=3
+        text1.set('num_discos('+str(num_discos)+')')
+    if mensaje=='2':
+        print('c')
+        if valor_modo==1:
+            valor_modo=2
+        else:
+            if valor_modo==2:
+                valor_modo=3
+            else:
+                valor_modo=1
+        text2.set('valor_modo('+str(valor_modo)+')')
+    if mensaje=='3':
+         if configuracion==1 and valor_modo==1:
+            if decision=='1-2':
+                decision='1-3'
+                t_des_ini=1
+                t_des_fin=3
+            elif decision=='1-3':
+                decision='2-1'
+                t_des_ini=2
+                t_des_fin=1
+            elif decision=='2-1':
+                decision='2-3'
+                t_des_ini=2
+                t_des_fin=3
+            elif decision=='2-3':
+                decision='3-1'
+                t_des_ini=3
+                t_des_fin=1
+            elif decision=='3-1':
+                decision='3-2'
+                t_des_ini=3
+                t_des_fin=2
+            elif decision=='3-2':
+                decision='1-2'
+                t_des_ini=1
+                t_des_fin=2
+            text3.set('cambio('+decision+')')
+    if mensaje=='4':
+        if configuracion==0:
+            configuracion=1
+            recursion_hanoi(num_discos,1,3)
+            comienzo()
+        elif configuracion==1:
+            if valor_modo==1:
+                analisis_jugada()
+            if valor_modo==2:
+                pasos_hanoi()
+                aplica_movimiento()
+            if valor_modo==3:
+                aplica_movimiento()
+
+
+def analisis_jugada():
+    if matriz_hanoi[1,t_des_ini-1]!=0: 
+        if matriz_hanoi[1,t_des_fin-1]==0:
+            text5.set('movimiento valido')
+            aplica_movimiento()
+        else:
+            if matriz_hanoi[1,t_des_ini-1]<matriz_hanoi[1,t_des_fin-1]:
+                text5.set('movimiento valido')
+                aplica_movimiento()
+            else:
+                text5.set('movimiento invalido')
+                
+def aplica_movimiento():
+    global cambio
+    global contador
+    global t_inicial
+    global t_final
+    global matriz_hanoi
+    global t_des_ini
+    global t_des_fin
+    if valor_modo==1:
+        t_inicial=t_des_ini-1
+        t_final=t_des_fin-1
+    else:
+        t_inicial=cambio[contador,0]-1
+        t_final=cambio[contador,1]-1
+    text4.set(str(t_inicial+1)+'->'+str(t_final+1))
+    matriz_hanoi[int(matriz_hanoi[0,t_final]+2),t_final]=matriz_hanoi[1,t_inicial]  
+    matriz_hanoi[1,t_final]=matriz_hanoi[1,t_inicial]
+    matriz_hanoi[0,t_final]=matriz_hanoi[0,t_final]+1
+    if (matriz_hanoi[0,t_inicial]==1):
+        matriz_hanoi[1,t_inicial]= 0
+    else:
+        matriz_hanoi[1,t_inicial]= matriz_hanoi[int(matriz_hanoi[0,t_inicial]),t_inicial]
+    matriz_hanoi[int(matriz_hanoi[0,t_inicial]+1),t_inicial]=0
+    matriz_hanoi[0,t_inicial]=matriz_hanoi[0,t_inicial]-1
+    contador=contador+1
+    print(matriz_hanoi)
+    visualizar()
+
+def visualizar():
+    global matriz_hanoi
+    x=['','','','','']
+    y=['','','','','']
+    z=['','','','','']
+    for k in range(5):
+        for i in range(5-int(matriz_hanoi[k+2,0])):
+            x[k]+='|'
+        for i in range((matriz_hanoi[k+2,0])):
+            x[k]+='#'
+        x[k]+='-'
+        for i in range((matriz_hanoi[k+2,0])):
+            x[k]+='#'
+        for i in range(5-int(matriz_hanoi[k+2,0])):
+            x[k]+='|'
+    for k in range(5):
+        for i in range(5-int(matriz_hanoi[k+2,1])):
+            y[k]+='|'
+        for i in range((matriz_hanoi[k+2,1])):
+            y[k]+='#'
+        y[k]+='-'
+        for i in range((matriz_hanoi[k+2,1])):
+            y[k]+='#'
+        for i in range(5-int(matriz_hanoi[k+2,1])):
+            y[k]+='|'
+    for k in range(5):
+        for i in range(5-int(matriz_hanoi[k+2,2])):
+            z[k]+='|'
+        for i in range((matriz_hanoi[k+2,2])):
+            z[k]+='#'
+        z[k]+='-'
+        for i in range((matriz_hanoi[k+2,2])):
+            z[k]+='#'
+        for i in range(5-int(matriz_hanoi[k+2,2])):
+            z[k]+='|'
+            
+    torre_1a.set(x[0])
+    torre_1b.set(x[1])
+    torre_1c.set(x[2])
+    torre_1d.set(x[3])
+    torre_1e.set(x[4])
+    
+    torre_2a.set(y[0])
+    torre_2b.set(y[1])
+    torre_2c.set(y[2])
+    torre_2d.set(y[3])
+    torre_2e.set(y[4])
+    
+    torre_3a.set(z[0])
+    torre_3b.set(z[1])
+    torre_3c.set(z[2])
+    torre_3d.set(z[3])
+    torre_3e.set(z[4])  
+
+def pasos_hanoi():
+    global ju_numero
+    global temporal
+    global flag
+    if flag==0:
+        flag=1
+        for i in range(ju_numero):
+            temporal+=(str(cambio[i,0])+'->'+str(cambio[i,1])+'; ')
+        text5.set(temporal)
+    
+def recursion_hanoi(num_discos,tor_ini,tor_fin):
+    if num_discos>0 :
+        recursion_hanoi(num_discos-1, tor_ini, 6-tor_ini-tor_fin)
+        global cambio
+        global ju_numero
+        cambio[ju_numero,0]=tor_ini
+        cambio[ju_numero,1]= tor_fin
+        ju_numero=ju_numero+1
+        recursion_hanoi(num_discos-1, 6-tor_ini-tor_fin, tor_fin)
+        #print(cambio)
+    
+    
+btn = Button(negro, text="comenzar", command= lambda: ciclo_principal())
+btn.grid(row=0, column=33, padx=(10, 10), pady=(10, 10))
+
+
+negro.mainloop()
